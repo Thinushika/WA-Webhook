@@ -1,6 +1,6 @@
 const express = require("express");
 const axios = require("axios");
-require('dotenv').config()  
+require('dotenv').config()
 
 const app = express();
 app.use(express.json());
@@ -10,7 +10,7 @@ const { WEBHOOK_VERIFY_TOKEN, GRAPH_API_TOKEN, PORT } = process.env;
 app.post("/webhook", async (req, res) => {
 
   console.log("Incoming webhook message:", JSON.stringify(req.body, null, 2));
-  
+
   const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
 
   if (message?.type === "text") {
@@ -28,7 +28,7 @@ app.post("/webhook", async (req, res) => {
         to: message.from,
         text: { body: "Hi.. I'm TJ" },
         context: {
-          message_id: message.id, 
+          message_id: message.id,
         },
       },
     });
@@ -68,6 +68,16 @@ app.get("/", (req, res) => {
   res.send(`<pre>Nothing to see here.
 Checkout README.md to start.</pre>`);
 });
+
+app.get("/messages", (req, res) => {
+  const formattedMessages = messages
+    .map(msg => `${msg.type.toUpperCase()} - ${msg.type === "incoming" ? "From" : "To"}: ${msg.type === "incoming" ? msg.from : msg.to} | ${msg.text} | ${msg.timestamp}`)
+    .join("\n");
+
+  res.set("Content-Type", "text/plain");
+  res.send(formattedMessages);
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server is a listening on port: ${PORT}`);
