@@ -65,12 +65,10 @@ app.get("/webhook", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  console.log("hi")
   res.send(`<pre>Nothing to see here.
 Checkout README.md to start.</pre>`);
 });
 
 app.listen(PORT, () => {
-  console.log("hi")
   console.log(`Server is a listening on port: ${PORT}`);
 });
